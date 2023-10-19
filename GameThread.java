@@ -12,15 +12,16 @@ public class GameThread extends Thread {
     @Override
     public void run() {
         while (true) {
-            //table.drawBlock();
-            
-            try {
-                table.fallingBlock();
-
-                Thread.sleep(1000);
-            } catch (Exception e) {
-                // TODO: handle exception
+            table.spawnBlock();
+            while(table.fallingBlock()) {
+                try {
+                
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                }
             }
+            //table.addBlockToTable();
         }
     }
 

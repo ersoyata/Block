@@ -24,7 +24,7 @@ public class Game {
 
     public void run() {
         buildGame();
-        table.generateBlock();
+        //table.spawnBlock();
         thread.start();
     }
 

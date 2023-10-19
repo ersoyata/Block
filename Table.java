@@ -7,29 +7,19 @@ public class Table extends JPanel {
     private final int gridColumns = 7;
     private final int gridCellSize = 30;
     private Block block;
+    private Color[][] background;
     private Random random = new Random();
     int n = random.nextInt(0, 5);
     
-    public void generateBlock() {
-        if (n == 0) {
-            block = new SquareShapedBlock();
-        } else if (n == 1) {
-            block = new SShapedBlock();
-        } else if (n == 2) {
-            block = new LShapedBlock();
-        } else if (n == 3) {
-            block = new IShapedBlock();
-        } else {
-            block = new WeirdShapedBlock();
-        }
-    }
 
-
-    public void fallingBlock() {
+    public boolean fallingBlock() {
         if (!bottomHit()) {
             block.fall();
             repaint();
+            return true;
         }
+        //addBlockToTable();
+        return false;
         
     }
 
@@ -52,6 +42,7 @@ public class Table extends JPanel {
 
     public Table() {
         this.setBounds(180, 180, 210, 360);
+        background = new Color[210][360];
         //this.setBackground(Color.gray);
 
         //gridCellSize = this.getBounds().width / gridColumns;
@@ -63,25 +54,75 @@ public class Table extends JPanel {
         if (block.hitBottom() == gridRows) {
             return true;
         }
+        //addBlockToTable();
         return false;
     }
     
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        drawBackground(g);
+        drawBlock(g);
 
+        // g.setColor(Color.gray);
+        // g.fillRect(180, 180, 210, 360);
+        // g.setColor(Color.black);
+        // for (int x = 6; x <= gridRows + 5; x++) {
+        //    for (int y = 6; y <= gridColumns + 5; y++) {
+        //         g.drawRect(y * gridCellSize, x * gridCellSize, gridCellSize, gridCellSize);
+        //     }
+        // }
+    }
+
+    private void drawBackground(Graphics g) {
         g.setColor(Color.gray);
         g.fillRect(180, 180, 210, 360);
         g.setColor(Color.black);
         for (int x = 6; x <= gridRows + 5; x++) {
-            for (int y = 6; y <= gridColumns + 5; y++) {
-                g.drawRect(y * gridCellSize, x * gridCellSize, gridCellSize, gridCellSize);
+           for (int y = 6; y <= gridColumns + 5; y++) {
+                Color color = background[x][y];
+
+                if (color == Color.gray){ 
+                    g.drawRect(y * gridCellSize, x * gridCellSize, gridCellSize, gridCellSize);
+            
+                } else {
+                    //addBlockToTable();
+                    g.setColor(color);
+                    g.drawRect(y * gridCellSize, x * gridCellSize, gridCellSize, gridCellSize);
+                }
             }
         }
-        drawBlock(g);
+    }
+
+    public void addBlockToTable() {
+        int[][] shape = block.getShape();
+        int h = block.getHeight();
+        int w = block.getWidth();
+        int xPos = block.getX();
+        int yPos = block.getY();
+        Color color = block.getColor();
+
+        for (int r = 0; r < h; r++) {
+            for (int c = 0; c < w; c++) {
+                if (shape[r][c] >= 1) {
+                    background[r + yPos][c + xPos] = color;
+                }
+ 
+            }
+        }
     }
 
     public void spawnBlock() {
-        
+        if (n == 0) {
+            block = new SquareShapedBlock();
+        } else if (n == 1) {
+            block = new SShapedBlock();
+        } else if (n == 2) {
+            block = new LShapedBlock();
+        } else if (n == 3) {
+            block = new IShapedBlock();
+        } else {
+            block = new WeirdShapedBlock();
+        }
     }
 }
