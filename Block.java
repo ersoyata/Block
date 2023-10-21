@@ -73,4 +73,12 @@ public class Block {
     public int hitBottom() {
         return getY() - getHeight();
     }
+
+    public int leftBound() {
+        return x;
+    }
+
+    public int rightBound() {
+        return x + getWidth();
+    }
 }

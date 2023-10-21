@@ -6,7 +6,7 @@ public class Table extends JPanel {
     private final int gridRows = 12;
     private final int gridColumns = 7;
     private final int gridCellSize = 30;
-    private Block block;
+    private Block block = new LShapedBlock();
     private Color[][] background;
     private Random random = new Random();
     int n = random.nextInt(0, 5);
@@ -16,10 +16,20 @@ public class Table extends JPanel {
         if (!bottomHit()) {
             block.fall();
             repaint();
+            //addBlockToTable();
+
             return true;
         }
-        //addBlockToTable();
+        addBlockToTable();
         return false;
+
+        // if (!bottomHit()) {
+        //     add
+        //     return false;
+        // }
+        // block.fall();
+        // repaint();
+        // return true;
         
     }
 
@@ -42,7 +52,8 @@ public class Table extends JPanel {
 
     public Table() {
         this.setBounds(180, 180, 210, 360);
-        background = new Color[210][360];
+        background = new Color[360][210];
+        background[0][0] = Color.green;
         //this.setBackground(Color.gray);
 
         //gridCellSize = this.getBounds().width / gridColumns;
@@ -57,32 +68,74 @@ public class Table extends JPanel {
         //addBlockToTable();
         return false;
     }
+
+    private boolean leftBoundHit() {
+        if (block.leftBound() == 6) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean rightBoundHit() {
+        if (block.rightBound() == gridColumns + 6) {
+            return false;
+        }
+        return true;
+        
+    }
+
+    public void moveToLeft() {
+        if (!leftBoundHit()) {
+        } else {
+            block.moveLeft();
+            repaint();
+        }
+    }
+
+    public void moveToRight() {
+        if (!rightBoundHit()) {
+        } else {
+            block.moveRight();
+            repaint();
+        }
+    }
+
+    private void drawColumn(Graphics g) {
+        for (int y = 180; y < 520; y += 30) {
+            g.drawRect(420, y, gridCellSize, gridCellSize);
+        }
+    }
     
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        drawGameArea(g);
         drawBackground(g);
+        drawColumn(g);
         drawBlock(g);
 
-        // g.setColor(Color.gray);
-        // g.fillRect(180, 180, 210, 360);
-        // g.setColor(Color.black);
-        // for (int x = 6; x <= gridRows + 5; x++) {
-        //    for (int y = 6; y <= gridColumns + 5; y++) {
-        //         g.drawRect(y * gridCellSize, x * gridCellSize, gridCellSize, gridCellSize);
-        //     }
+        //  g.setColor(Color.gray);
+        //  g.fillRect(180, 180, 210, 360);
+        //  g.setColor(Color.black);
+        //  for (int x = 6; x <= gridRows + 5; x++) {
+        //     for (int y = 6; y <= gridColumns + 5; y++) {
+        //          g.drawRect(y * gridCellSize, x * gridCellSize, gridCellSize, gridCellSize);
+        //      }
         // }
+
+        //drawBackground(g);
+        
     }
 
     private void drawBackground(Graphics g) {
         g.setColor(Color.gray);
         g.fillRect(180, 180, 210, 360);
         g.setColor(Color.black);
-        for (int x = 6; x <= gridRows + 5; x++) {
+        for (int x = 6; x <= gridRows + 5; x++) { 
            for (int y = 6; y <= gridColumns + 5; y++) {
                 Color color = background[x][y];
 
-                if (color == Color.gray){ 
+                if (color == Color.gray) { 
                     g.drawRect(y * gridCellSize, x * gridCellSize, gridCellSize, gridCellSize);
             
                 } else {
@@ -93,6 +146,8 @@ public class Table extends JPanel {
             }
         }
     }
+
+    
 
     public void addBlockToTable() {
         int[][] shape = block.getShape();
@@ -107,7 +162,6 @@ public class Table extends JPanel {
                 if (shape[r][c] >= 1) {
                     background[r + yPos][c + xPos] = color;
                 }
- 
             }
         }
     }
@@ -123,6 +177,17 @@ public class Table extends JPanel {
             block = new IShapedBlock();
         } else {
             block = new WeirdShapedBlock();
+        }
+    }
+
+    private void drawGameArea(Graphics g) {
+        g.setColor(Color.gray);
+        g.fillRect(180, 180, 210, 360);
+        g.setColor(Color.black);
+        for (int x = 6; x <= gridRows + 5; x++) {
+            for (int y = 6; y <= gridColumns + 5; y++) {
+                g.drawRect(y * gridCellSize, x * gridCellSize, gridCellSize, gridCellSize);
+            }
         }
     }
 }
