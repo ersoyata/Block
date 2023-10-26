@@ -6,8 +6,9 @@ public class WeirdShapedBlock extends Block{
     String number = "8";
     
     public WeirdShapedBlock() {
-        super.setShape(shape);
-        super.setColor(color);
-        super.setNumber(number);
+        super(new int[][] {{8, 0}, {8, 8}, {8, 0}}, Color.pink, "4");
+        // super.setShape(this.shape);
+        // super.setColor(this.color);
+        // super.setNumber(this.number);
     }
 }

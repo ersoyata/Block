@@ -7,10 +7,16 @@ public class Block {
     private int[][] shape;
     private Color color;
     private String number;
-    private int x = 9;
-    private int y = 2;
+    int x, y;
 
-    public Block() {} 
+
+    public Block(int[][] shape, Color color, String number) {
+        this.shape = shape;
+        this.color = color;
+        this.number = number;
+        y = -getHeight();
+        x = 3;
+    } 
 
     /*
     public Block(int[][] shape, Color color) {
@@ -71,7 +77,7 @@ public class Block {
     }
 
     public int hitBottom() {
-        return getY() - getHeight();
+        return getY() + getHeight();
     }
 
     public int leftBound() {

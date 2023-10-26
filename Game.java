@@ -14,7 +14,7 @@ public class Game {
 
     void buildGame() {
         frame = new JFrame("Math tetris"); // h.mohayeji.nasrabadi@tue.nl
-        frame.setSize(600, 600);
+        frame.setSize(300, 450);
         frame.add(table);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
@@ -24,7 +24,6 @@ public class Game {
 
     public void run() {
         buildGame();
-        //table.spawnBlock();
         thread.start();
     }
     
@@ -54,12 +53,6 @@ public class Game {
             }
         });
 
-        /*aMap.put("up", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                table.rotateBlock();
-            }
-        });*/
     }
 
     public static void main(String[] args) {
