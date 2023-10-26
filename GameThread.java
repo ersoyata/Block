@@ -16,7 +16,7 @@ public class GameThread extends Thread {
             while(table.fallingBlock()) {
                 try {
                 
-                    Thread.sleep(300);
+                    Thread.sleep(150);
                 } catch (Exception e) {
                     // TODO: handle exception
                 }

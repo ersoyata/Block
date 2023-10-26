@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Table extends JPanel {
     private final int gridRows = 12;
-    private final int gridColumns = 7;
+    private final int gridColumns = 8;
     private final int gridCellSize = 30;
     private Block block;
     private Color[][] background;
@@ -25,6 +25,7 @@ public class Table extends JPanel {
     public boolean fallingBlock() {
         if (!bottomHit()) {
             addBlockToTable();
+            eliminateRow();
             return false;
         }
         block.fall();
@@ -116,46 +117,50 @@ public class Table extends JPanel {
     }
        
 
-    private void eliminateRow(Graphics g) {
+    private void eliminateRow() {
 
-        boolean isCleared = false;
+        boolean isCleared;
 
-        for (int row = block.getHeight() - 1; row >= 0; row--) {
+        for (int row = gridRows - 1; row >= 0; row--) {
             
             isCleared = true;
-            for (int col = 0; col < block.getWidth(); col++) {
-                if (background[row][col] == null || rowSum(row) < 30) {
+            for (int col = 0; col < gridColumns; col++) {
+                if (background[row][col] == null) {
                     isCleared = false;
                     break;
                 }
                 
             }
             if (isCleared) {
-                for (int col = 0; col < block.getWidth(); col++) {
+                for (int col = 0; col < gridColumns; col++) {
                     background[row][col] = null;
-                    numbersToEliminate[row][col] = 0;
+                    // numbersToEliminate[row][col] = 0;
                 }
-                extraColumn[extraColoumnCounter] = 1;
-                g.fillRect(420, 180 + extraColoumnCounter * gridCellSize, gridCellSize, gridCellSize);
-                extraColoumnCounter++;
+                rowsDown(row);
+                repaint();
+                row++;
+                // extraColumn[extraColoumnCounter] = 1;
+                // g.fillRect(420, 180 + extraColoumnCounter * gridCellSize, gridCellSize, gridCellSize);
+                // extraColoumnCounter++;
 
             }
+        
         }
     }
 
     private int rowSum(int row) {
         int sum = 0;
-        for (int col = 0; col < block.getWidth(); col++) {
+        for (int col = 0; col < gridColumns; col++) {
             sum += numbersToEliminate[row][col];
         }
         return sum;
     }
 
     private void rowsDown(int row) {
-        for (int r = row; row > 0; row--) {
-            for (int col = 0; col < block.getWidth(); col++){
-                background[row][col] = background[row - 1][col];
-                numbersToEliminate[row][col] = numbersToEliminate[row][col];
+        for (int r = row; r > 0; r--) {
+            for (int col = 0; col < gridColumns; col++){
+                background[r][col] = background[r - 1][col];
+                // numbersToEliminate[row][col] = numbersToEliminate[row][col];
             }
         }
     }
@@ -174,7 +179,7 @@ public class Table extends JPanel {
         // } else {
         //     block = new WeirdShapedBlock();
         // }
-        block = new IShapedBlock();
+        block = new SquareShapedBlock();
     }
 
     public void addBlockToTable() {
@@ -271,4 +276,6 @@ public class Table extends JPanel {
             g.drawRect(420, y, gridCellSize, gridCellSize);
         }
     }
+
+
 }
