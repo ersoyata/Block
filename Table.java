@@ -11,19 +11,24 @@ public class Table extends JPanel {
     private int[][] numbersToEliminate;
     private String[][] backgroundNumbers;
     private Random random = new Random();
-    private int[] extraColumn = new int[12];
-    private int extraColoumnCounter = 0;
+    private int[] extraColumn;
+    private Color[] extraColors;
+    private int extraColumnCounter = 11;
+    private boolean canBeFilled;
+
      
     public Table() {
         this.setBounds(0, 0, 240, 420);
         background = new Color[gridRows][gridColumns];
-        
-        // numbersToEliminate = new int[gridRows + 6][gridColumns + 6];
-        // backgroundNumbers = new String[gridRows + 6][gridColumns + 6];
+        numbersToEliminate = new int[gridRows][gridColumns];
+        backgroundNumbers = new String[gridRows][gridColumns];
+        extraColors = new Color[12];
+        extraColumn = new int[12];
     }
 
     public boolean fallingBlock() {
         if (!bottomHit()) {
+            endOfGame();
             addBlockToTable();
             eliminateRow();
             return false;
@@ -117,28 +122,37 @@ public class Table extends JPanel {
     }
        
 
+
     private void eliminateRow() {
 
         boolean isCleared;
+        boolean rightSum;
 
         for (int row = gridRows - 1; row >= 0; row--) {
             
             isCleared = true;
+            rightSum = true;
+            canBeFilled = false;
             for (int col = 0; col < gridColumns; col++) {
                 if (background[row][col] == null) {
                     isCleared = false;
+
                     break;
-                }
-                
+                }      
             }
-            if (isCleared) {
+
+            if (rowSum(row) < 30) rightSum = false;
+            if (isCleared && rightSum) {
                 for (int col = 0; col < gridColumns; col++) {
                     background[row][col] = null;
-                    // numbersToEliminate[row][col] = 0;
+                    numbersToEliminate[row][col] = 0;
+                    backgroundNumbers[row][col] = null;
                 }
+                canBeFilled = true;
                 rowsDown(row);
+                row ++;
+                addToColumn();
                 repaint();
-                row++;
                 // extraColumn[extraColoumnCounter] = 1;
                 // g.fillRect(420, 180 + extraColoumnCounter * gridCellSize, gridCellSize, gridCellSize);
                 // extraColoumnCounter++;
@@ -160,8 +174,20 @@ public class Table extends JPanel {
         for (int r = row; r > 0; r--) {
             for (int col = 0; col < gridColumns; col++){
                 background[r][col] = background[r - 1][col];
-                // numbersToEliminate[row][col] = numbersToEliminate[row][col];
+                numbersToEliminate[r][col] = numbersToEliminate[r - 1][col];
             }
+        }
+    }
+
+    private void addToColumn() {
+        extraColumn[extraColumnCounter] = 1;
+        extraColors[extraColumnCounter] = Color.green;
+        extraColumnCounter--;
+    }
+    
+    private void endOfGame() {
+        if (extraColumnCounter < 0) {
+            System.exit(0);
         }
     }
 
@@ -179,7 +205,7 @@ public class Table extends JPanel {
         // } else {
         //     block = new WeirdShapedBlock();
         // }
-        block = new SquareShapedBlock();
+        block = new IShapedBlock();
     }
 
     public void addBlockToTable() {
@@ -194,8 +220,8 @@ public class Table extends JPanel {
             for (int c = 0; c < w; c++) {
                 if (shape[r][c] >= 1) {
                     background[r + yPos][c + xPos] = color;
-                    // numbersToEliminate[r + yPos - 6][c + xPos - 6] = Integer.parseInt(block.getNumber());
-                    // backgroundNumbers[r + yPos - 6][c + xPos - 6] = block.getNumber();
+                    numbersToEliminate[r + yPos][c + xPos] = Integer.parseInt(block.getNumber());
+                    backgroundNumbers[r + yPos][c + xPos] = block.getNumber();
                     
                 }
             }
@@ -210,12 +236,17 @@ public class Table extends JPanel {
         g.setColor(Color.black);
         g.drawRect(0,0, 210, 360);
 
-                for (int row = 0; row < gridRows; row++) {
+        for (int row = 0; row < gridRows; row++) {
             for (int col = 0; col < gridColumns; col++) {
                 g.drawRect(col * gridCellSize, row * gridCellSize, gridCellSize, gridCellSize);
             }
         }
         drawBlock(g);
+        drawColumn(g);
+
+        // if (canBeFilled) {
+        //     fillColumn(g);
+        // }
 
     }
 
@@ -259,23 +290,35 @@ public class Table extends JPanel {
                 if (color != null) {
                     g.setColor(color);
                     g.fillRect(y * gridCellSize, x * gridCellSize, gridCellSize, gridCellSize);
-                    // g.setColor(Color.black);
-                    // g.setFont(new Font("Dialog", Font.PLAIN, 20));
-                    // g.drawString(block.getNumber(), (block.getX() + y) * gridCellSize, (block.getY() + x) * gridCellSize);
+                    g.setColor(Color.black);
+                    g.setFont(new Font("Dialog", Font.PLAIN, 20));
+                    g.drawString(block.getNumber(), y * gridCellSize + 10, x * gridCellSize + 20);
                 }
-                // g.setColor(Color.black);
-                // g.setFont(new Font("Dialog", Font.PLAIN, 20));
-                // g.drawString(block.getNumber(), (block.getX() + y) * gridCellSize, (block.getY() + x) * gridCellSize);
+            }
+        }
+        for (int row = 0; row < gridRows; row++) {
+            Color color = extraColors[row];
+            if (color != null) {
+                g.setColor(Color.green);
+                g.fillRect(270, row * gridCellSize, gridCellSize, gridCellSize);
+                g.setColor(Color.black);
+                g.drawRect(270, row * gridCellSize, gridCellSize, gridCellSize);
             }
         }
     }
     
 
     private void drawColumn(Graphics g) {
-        for (int y = 180; y < 520; y += 30) {
-            g.drawRect(420, y, gridCellSize, gridCellSize);
+        for (int y = 0; y < 360; y += 30) {
+            g.drawRect(270, y, gridCellSize, gridCellSize);
         }
     }
 
+    private void fillColumn(Graphics g) {
+        g.setColor(Color.green);
+        g.fillRect(270, extraColumnCounter * 30, gridCellSize, gridCellSize);
+        g.setColor(Color.black);
+        g.drawRect(270, extraColumnCounter * 30, gridCellSize, gridCellSize);
+    }
 
 }
