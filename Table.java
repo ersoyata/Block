@@ -3,7 +3,7 @@ import java.awt.*;
 import java.util.*;
 
 public class Table extends JPanel {
-    private final int gridRows = 12;
+    private final int gridRows = 14;
     private final int gridColumns = 8;
     private final int gridCellSize = 30;
     private Block block;
@@ -15,10 +15,12 @@ public class Table extends JPanel {
     private Color[] extraColors;
     private int extraColumnCounter = 11;
     private boolean canBeFilled;
+    private boolean gameLost = false;
+    private boolean gameWon = false;
 
      
     public Table() {
-        this.setBounds(0, 0, 240, 420);
+        this.setBounds(0, 0, 240, 480);
         background = new Color[gridRows][gridColumns];
         numbersToEliminate = new int[gridRows][gridColumns];
         backgroundNumbers = new String[gridRows][gridColumns];
@@ -26,9 +28,12 @@ public class Table extends JPanel {
         extraColumn = new int[12];
     }
 
+    public boolean getGameLost() {
+        return gameLost;
+    }
     public boolean fallingBlock() {
         if (!bottomHit()) {
-            endOfGame();
+            //endOfGame();
             addBlockToTable();
             eliminateRow();
             return false;
@@ -50,6 +55,7 @@ public class Table extends JPanel {
                 if (shape[row][col] >= 1) {
                     int xRow = block.getX() + col;
                     int yCol = block.getY() + row + 1;
+                    if (yCol < 0) continue;
                     if (background[yCol][xRow] != null) {
                         return false;
                     }
@@ -150,7 +156,7 @@ public class Table extends JPanel {
                 }
                 canBeFilled = true;
                 rowsDown(row);
-                row ++;
+                row++;
                 addToColumn();
                 repaint();
                 // extraColumn[extraColoumnCounter] = 1;
@@ -175,6 +181,7 @@ public class Table extends JPanel {
             for (int col = 0; col < gridColumns; col++){
                 background[r][col] = background[r - 1][col];
                 numbersToEliminate[r][col] = numbersToEliminate[r - 1][col];
+                backgroundNumbers[r][col] = backgroundNumbers[r - 1][col];
             }
         }
     }
@@ -185,27 +192,31 @@ public class Table extends JPanel {
         extraColumnCounter--;
     }
     
-    private void endOfGame() {
+    public void endOfGame() {
         if (extraColumnCounter < 0) {
-            System.exit(0);
+            gameWon = true;
         }
     }
 
     public void spawnBlock() {
-        // int n = random.nextInt(0, 5);
+        int n = random.nextInt(0, 7);
         
-        // if (n == 0) {
-        //     block = new SquareShapedBlock();
-        // } else if (n == 1) {
-        //     block = new SShapedBlock();
-        // } else if (n == 2) {
-        //     block = new LShapedBlock();
-        // } else if (n == 3) {
-        //     block = new IShapedBlock();
-        // } else {
-        //     block = new WeirdShapedBlock();
-        // }
-        block = new IShapedBlock();
+        if (n == 0) {
+            block = new SquareShapedBlock();
+        } else if (n == 1) {
+            block = new SShapedBlock();
+        } else if (n == 2) {
+            block = new LShapedBlock();
+        } else if (n == 3) {
+            block = new IShapedBlock();
+        } else if (n == 4) {
+            block = new WeirdShapedBlock();
+        } else if (n == 5) {
+            block = new TShapedBlock();
+        } else {
+            block = new JShapedBlock();
+        }
+        // block = new TShapedBlock();
     }
 
     public void addBlockToTable() {
@@ -218,11 +229,16 @@ public class Table extends JPanel {
 
         for (int r = 0; r < h; r++) {
             for (int c = 0; c < w; c++) {
-                if (shape[r][c] >= 1) {
-                    background[r + yPos][c + xPos] = color;
-                    numbersToEliminate[r + yPos][c + xPos] = Integer.parseInt(block.getNumber());
-                    backgroundNumbers[r + yPos][c + xPos] = block.getNumber();
+                try {
+                    if (shape[r][c] >= 1) {
+                        background[r + yPos][c + xPos] = color;
+                        numbersToEliminate[r + yPos][c + xPos] = Integer.parseInt(block.getNumber());
+                        backgroundNumbers[r + yPos][c + xPos] = block.getNumber();
                     
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    gameLost = true;
+                    repaint();
                 }
             }
         }
@@ -233,6 +249,7 @@ public class Table extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         drawBackground(g);
+        //drawNumbers(g);
         g.setColor(Color.black);
         g.drawRect(0,0, 210, 360);
 
@@ -243,7 +260,14 @@ public class Table extends JPanel {
         }
         drawBlock(g);
         drawColumn(g);
+        
+        if (gameLost) {
+            gameLostMessage(g);
+        }
 
+        if (gameWon) {
+            gameWonMessage(g);
+        }
         // if (canBeFilled) {
         //     fillColumn(g);
         // }
@@ -286,17 +310,30 @@ public class Table extends JPanel {
         for (int x = 0; x < gridRows; x++) { 
            for (int y = 0; y < gridColumns; y++) {
                 Color color = background[x][y];
+                // String number = backgroundNumbers[x][y];
                 
                 if (color != null) {
                     g.setColor(color);
                     g.fillRect(y * gridCellSize, x * gridCellSize, gridCellSize, gridCellSize);
-                    g.setColor(Color.black);
-                    g.setFont(new Font("Dialog", Font.PLAIN, 20));
-                    g.drawString(block.getNumber(), y * gridCellSize + 10, x * gridCellSize + 20);
+                    //drawNumbers(g, y, x);
+                    // g.setColor(Color.black);
+                    // g.setFont(new Font("Dialog", Font.PLAIN, 20));
+                    // g.drawString(number, y * gridCellSize + 10, x * gridCellSize + 20);
                 }
             }
         }
-        for (int row = 0; row < gridRows; row++) {
+        for (int x = 0; x < gridRows; x++) {
+            for (int y = 0; y < gridColumns; y++) {
+                String number = backgroundNumbers[x][y];
+                if (number != null) {
+                    g.setColor(Color.black);
+                    g.setFont(new Font("Dialog", Font.PLAIN, 20));
+                    g.drawString(number, y * gridCellSize + 10, x * gridCellSize + 20);
+                }
+            }
+        }
+        
+        for (int row = 0; row < gridRows - 2; row++) {
             Color color = extraColors[row];
             if (color != null) {
                 g.setColor(Color.green);
@@ -305,11 +342,11 @@ public class Table extends JPanel {
                 g.drawRect(270, row * gridCellSize, gridCellSize, gridCellSize);
             }
         }
+        
     }
     
-
     private void drawColumn(Graphics g) {
-        for (int y = 0; y < 360; y += 30) {
+        for (int y = 60; y < 420; y += 30) {
             g.drawRect(270, y, gridCellSize, gridCellSize);
         }
     }
@@ -321,4 +358,15 @@ public class Table extends JPanel {
         g.drawRect(270, extraColumnCounter * 30, gridCellSize, gridCellSize);
     }
 
+    private void gameLostMessage(Graphics g) {
+        g.setColor(Color.red);
+        g.setFont(new Font("Serif", Font.PLAIN, 50));
+        g.drawString("You Lost", 40, 200);
+    }
+
+    private void gameWonMessage(Graphics g) {
+        g.setColor(Color.green);
+        g.setFont(new Font("Serif", Font.PLAIN, 50));
+        g.drawString("You Won", 40, 200);
+    }
 }

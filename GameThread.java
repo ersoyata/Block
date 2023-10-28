@@ -11,17 +11,18 @@ public class GameThread extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        while (!table.getGameLost()) {
             table.spawnBlock();
             while(table.fallingBlock()) {
                 try {
                 
-                    Thread.sleep(150);
+                    Thread.sleep(100);
                 } catch (Exception e) {
                     // TODO: handle exception
                 }
             }
             //table.addBlockToTable();
+            table.endOfGame();
         }
     }
 

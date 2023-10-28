@@ -9,7 +9,8 @@ public class IShapedBlock extends Block {
         // this.shape = shape;
         // this.color = color;
         // this.number = number;
-        super(new int[][] {{2, 0}, {2, 0}, {2, 0}}, Color.green, "2");
+        //super(new int[][] {{2, 0}, {2, 0}, {2, 0}}, Color.green, "2");
+        super(new int[][] {{2} , {2}, {2}}, Color.green, "2");
     //     super.setShape(this.shape);
     //     super.setColor(this.color);
     //     super.setNumber(this.number);

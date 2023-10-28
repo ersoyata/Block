@@ -14,7 +14,7 @@ public class Game {
 
     void buildGame() {
         frame = new JFrame("Math tetris"); // h.mohayeji.nasrabadi@tue.nl
-        frame.setSize(330, 450);
+        frame.setSize(330, 480);
         frame.add(table);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
