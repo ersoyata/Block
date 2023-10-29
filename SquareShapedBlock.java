@@ -7,10 +7,7 @@ public class SquareShapedBlock extends Block {
     String number = "4";
     
     public SquareShapedBlock() {
-        super(new int[][] {{4, 4}, {4, 4}} , Color.red, "4");
-        // super.setShape(squareShape);
-        // super.setColor(color);
-        // super.setNumber(number);
+        super(new int[][] {{4, 4}, {4, 4}}, Color.red, "4");
     }
 
 }

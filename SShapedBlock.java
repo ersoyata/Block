@@ -8,9 +8,6 @@ public class SShapedBlock extends Block {
     
     public SShapedBlock() {
         super(new int[][] {{0, 8}, {8, 8}, {8, 0}}, Color.yellow, "8");
-        // super.setShape(shape);
-        // super.setColor(color);
-        // super.setNumber(number);
     }
 
 }

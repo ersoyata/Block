@@ -33,7 +33,6 @@ public class Table extends JPanel {
     }
     public boolean fallingBlock() {
         if (!bottomHit()) {
-            //endOfGame();
             addBlockToTable();
             eliminateRow();
             return false;
@@ -147,7 +146,9 @@ public class Table extends JPanel {
                 }      
             }
 
-            if (rowSum(row) < 30) rightSum = false;
+            if (rowSum(row) < 30) {
+                rightSum = false;
+            }
             if (isCleared && rightSum) {
                 for (int col = 0; col < gridColumns; col++) {
                     background[row][col] = null;
@@ -159,9 +160,6 @@ public class Table extends JPanel {
                 row++;
                 addToColumn();
                 repaint();
-                // extraColumn[extraColoumnCounter] = 1;
-                // g.fillRect(420, 180 + extraColoumnCounter * gridCellSize, gridCellSize, gridCellSize);
-                // extraColoumnCounter++;
 
             }
         
@@ -216,7 +214,6 @@ public class Table extends JPanel {
         } else {
             block = new JShapedBlock();
         }
-        // block = new TShapedBlock();
     }
 
     public void addBlockToTable() {
@@ -232,7 +229,8 @@ public class Table extends JPanel {
                 try {
                     if (shape[r][c] >= 1) {
                         background[r + yPos][c + xPos] = color;
-                        numbersToEliminate[r + yPos][c + xPos] = Integer.parseInt(block.getNumber());
+                        numbersToEliminate[r + yPos][c + xPos] = Integer.parseInt(
+                            block.getNumber());
                         backgroundNumbers[r + yPos][c + xPos] = block.getNumber();
                     
                     }
@@ -249,9 +247,8 @@ public class Table extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         drawBackground(g);
-        //drawNumbers(g);
         g.setColor(Color.black);
-        g.drawRect(0,0, 210, 360);
+        g.drawRect(0, 0, 210, 360);
 
         for (int row = 0; row < gridRows; row++) {
             for (int col = 0; col < gridColumns; col++) {
@@ -268,20 +265,15 @@ public class Table extends JPanel {
         if (gameWon) {
             gameWonMessage(g);
         }
-        // if (canBeFilled) {
-        //     fillColumn(g);
-        // }
 
     }
 
 
     private void drawGameArea(Graphics g) {
-        //g.setColor(Color.gray);
-        // g.fillRect(180, 180, 210, 360);
         g.setColor(Color.black);
         for (int x = 0; x < gridRows; x++) {
             for (int y = 0; y < gridColumns; y++) {
-                g.drawRect(y* gridCellSize, x* gridCellSize, gridCellSize, gridCellSize);
+                g.drawRect(y * gridCellSize, x * gridCellSize, gridCellSize, gridCellSize);
             }
         }
     }
@@ -304,21 +296,12 @@ public class Table extends JPanel {
     } 
         
     private void drawBackground(Graphics g) {
-        // g.setColor(Color.gray);
-        // g.fillRect(180, 180, 210, 360);
-        // g.setColor(Color.black);
         for (int x = 0; x < gridRows; x++) { 
-           for (int y = 0; y < gridColumns; y++) {
+            for (int y = 0; y < gridColumns; y++) {
                 Color color = background[x][y];
-                // String number = backgroundNumbers[x][y];
-                
                 if (color != null) {
                     g.setColor(color);
                     g.fillRect(y * gridCellSize, x * gridCellSize, gridCellSize, gridCellSize);
-                    //drawNumbers(g, y, x);
-                    // g.setColor(Color.black);
-                    // g.setFont(new Font("Dialog", Font.PLAIN, 20));
-                    // g.drawString(number, y * gridCellSize + 10, x * gridCellSize + 20);
                 }
             }
         }
@@ -349,13 +332,6 @@ public class Table extends JPanel {
         for (int y = 60; y < 420; y += 30) {
             g.drawRect(270, y, gridCellSize, gridCellSize);
         }
-    }
-
-    private void fillColumn(Graphics g) {
-        g.setColor(Color.green);
-        g.fillRect(270, extraColumnCounter * 30, gridCellSize, gridCellSize);
-        g.setColor(Color.black);
-        g.drawRect(270, extraColumnCounter * 30, gridCellSize, gridCellSize);
     }
 
     private void gameLostMessage(Graphics g) {

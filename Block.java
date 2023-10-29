@@ -18,12 +18,6 @@ public class Block {
         x = 3;
     } 
 
-    /*
-    public Block(int[][] shape, Color color) {
-        this.shape = shape;
-        this.color = color;
-    }*/
-
     public int[][] getShape() {
         return shape;
     }
