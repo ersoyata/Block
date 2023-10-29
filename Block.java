@@ -1,15 +1,28 @@
 import java.awt.*;
-import java.security.PublicKey;
 
-import javax.swing.*;
+/**
+ * Block is a class with basic operations on every spawned block.
+ * It includes especially all getters and setters methods and the class is later 
+ * inheritated by specific blocks.
+ * 
+ * @author Szymon Ptas <1934066>
+ * @author Ersoy Ata Baki <1971131>
+ */
 
 public class Block {
     private int[][] shape;
     private Color color;
     private String number;
-    int x, y;
+    private int x;
+    private int y;
 
-
+    /**
+     * Block is a constructor which takes 3 parameters used to create specific blocks.
+     * @param shape is two dimensional array which stores the cells that a block is
+     *      currenty occuping.
+     * @param color is type Color which stores specific color for every block.
+     * @param number is integer which stores a number of every block and puts it in the game area.
+     */
     public Block(int[][] shape, Color color, String number) {
         this.shape = shape;
         this.color = color;
